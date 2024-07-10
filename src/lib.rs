@@ -651,6 +651,7 @@ pub struct ExampleObject {
 
 /// The example value of an [`ExampleObject`].
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(untagged)]
 pub enum ExampleValue {
     /// The value is a JSON object embedded in the document.
     #[cfg(feature = "serde_json")]
