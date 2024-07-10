@@ -397,8 +397,8 @@ pub struct Schema {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The contents of the schema.
-    #[serde(flatten)]
-    pub contents: SchemaContents,
+    #[serde(default, flatten)]
+    pub contents: Option<SchemaContents>,
 }
 
 /// The content of a schema.
