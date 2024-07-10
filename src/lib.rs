@@ -51,7 +51,7 @@ impl OpenRpc {
     ///
     /// # Examples
     ///
-    /// ```no_run
+    /// ```ignore
     /// let path = "#/components/schemas/MY_SCHEMA";
     /// let schema = openrpc.get_schema(path).unwrap();
     /// ```
@@ -78,7 +78,7 @@ impl OpenRpc {
     ///
     /// # Examples
     ///
-    /// ```no_run
+    /// ```ignore
     /// let path = "#/components/errors/MY_ERROR";
     /// let schema = openrpc.get_schema(path).unwrap();
     /// ```
@@ -105,7 +105,7 @@ impl OpenRpc {
     ///
     /// # Examples
     ///
-    /// ```no_run
+    /// ```ignore
     /// let path = "#/components/errors/MY_ERROR";
     /// let schema = openrpc.get_schema(path).unwrap();
     /// ```
