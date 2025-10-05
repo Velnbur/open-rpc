@@ -7,10 +7,16 @@
 
 extern crate alloc;
 
+// Reexport so it can be used without adding in top-level crate.
+pub use utoipa;
+
 use alloc::collections::BTreeMap;
 use alloc::vec::Vec;
 
 use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "utoipa")]
+mod utoipa_utils;
 
 /// Represents an OpenRPC document.
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -47,6 +53,52 @@ pub struct OpenRpc {
 }
 
 impl OpenRpc {
+    /// Creates a new [`OpenRpc`] instance with the given title and default values.
+    pub fn new(title: impl ToString) -> Self {
+        Self {
+            openrpc: "1.0.0-rc1".to_string(),
+            info: Info {
+                title: title.to_string(),
+                description: Default::default(),
+                terms_of_service: Default::default(),
+                contact: Default::default(),
+                license: None,
+                version: String::new(),
+            },
+            servers: Vec::new(),
+            methods: Vec::new(),
+            components: None,
+            external_docs: None,
+        }
+    }
+
+    /// Adds a method to the OpenRPC document with empty parameters and result.
+    pub fn with_method(
+        mut self,
+        name: impl ToString,
+        docs: impl ToString,
+        params: Vec<ContentDescriptor>,
+        result: Option<ContentDescriptor>,
+    ) -> Self {
+        let docs = docs.to_string();
+        self.methods.push(RefOr::Inline(Method {
+            name: name.to_string(),
+            tags: Vec::new(),
+            summary: docs.lines().next().map(|line| line.to_owned()),
+            description: Some(docs),
+            external_docs: None,
+            params: params.into_iter().map(RefOr::Inline).collect(),
+            result: result.map(RefOr::Inline),
+            deprecated: false,
+            servers: None,
+            errors: Vec::new(),
+            links: Vec::new(),
+            param_structure: ParamStructure::Either,
+            examples: Vec::new(),
+        }));
+        self
+    }
+
     /// Returns the [`Method`] with the given path reference.
     ///
     /// # Examples
@@ -375,6 +427,20 @@ pub struct ContentDescriptor {
     /// Default is `false`.
     #[serde(default, skip_serializing_if = "serde_fns::is_false")]
     pub deprecated: bool,
+}
+
+impl ContentDescriptor {
+    /// Creates a new [`ContentDescriptor`] with the given name, documentation, and schema.
+    pub fn new(name: impl ToString, schema: Schema) -> Self {
+        Self {
+            name: name.to_string(),
+            summary: None,
+            description: None,
+            required: true,
+            schema,
+            deprecated: false,
+        }
+    }
 }
 
 /// Allows the definition of input and output data types.
