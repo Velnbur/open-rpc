@@ -7,12 +7,16 @@
 
 extern crate alloc;
 
+// Reexport so it can be used without adding in top-level crate.
+pub use utoipa;
+
 use alloc::collections::BTreeMap;
 use alloc::vec::Vec;
 
 use serde::{Deserialize, Serialize};
 
-mod utoipa;
+#[cfg(feature = "utoipa")]
+mod utoipa_utils;
 
 /// Represents an OpenRPC document.
 #[derive(Serialize, Deserialize, Debug, Clone)]

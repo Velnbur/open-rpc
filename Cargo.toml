@@ -10,15 +10,16 @@ authors = ["Nils Mathieu <contact@nils-mathieu.fr>"]
 keywords = ["openrpc", "rpc", "json-rpc", "json", "json-schema"]
 
 [features]
-default = ["std", "relaxed"]
+default = ["std", "relaxed", "utoipa"]
 std = ["serde/std", "serde_json/std"]
+utoipa = ["dep:utoipa"]
 relaxed = []
 
 [dependencies]
 serde = { version = "1", default-features = false, features = ["derive"] }
 serde_json = { version = "1" ,default-features = false, optional = true }
 thiserror = "2.0.16"
-utoipa = "5.4.0"
+utoipa = { version = "5.4.0", optional = true, features = ["macros"] }
 
 [dev-dependencies]
 rstest = "0.21.0"
